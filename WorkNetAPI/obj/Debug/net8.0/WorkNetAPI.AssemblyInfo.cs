@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkNetAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01c9c084ac051b8591d4049e3606bd29ebf7ab24")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a1a96dc1fcbc257e970c2375955486f4fd32ee5")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkNetAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkNetAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
