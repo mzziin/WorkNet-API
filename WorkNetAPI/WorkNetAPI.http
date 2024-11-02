@@ -1,0 +1,6 @@
+@WorkNetAPI_HostAddress = http://localhost:5209
+
+GET {{WorkNetAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
