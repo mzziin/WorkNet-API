@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkNet.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+01c9c084ac051b8591d4049e3606bd29ebf7ab24")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee2997d55cce0ad63d019e0a8f0b43225d12f430")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkNet.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkNet.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
