@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkNet.BLL.DTOs;
+using WorkNet.BLL.SecurityServices;
 using WorkNet.BLL.Services.IServices;
 
 namespace WorkNetAPI.Controllers
@@ -9,9 +10,11 @@ namespace WorkNetAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly JWTService _jwtService;
+        public AuthController(IAuthService authService, JWTService jwtService)
         {
             _authService = authService;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
@@ -26,9 +29,10 @@ namespace WorkNetAPI.Controllers
             var user = await _authService.Login(loginDTO);
             if (user == null)
             {
-                return Unauthorized("Invalid username or password");
+                return Unauthorized(new { Success = false, Message = "Invalid username or password" });
             }
-            return Ok(user);
+            var token = _jwtService.GenerateJwtToken(user);
+            return Ok(new { Success = true, Message = "Login successfull", User = user, Token = token });
         }
 
         [HttpPost]
@@ -43,11 +47,11 @@ namespace WorkNetAPI.Controllers
             var status = await _authService.RegisterEmployer(employerRegisterDTO);
             if (status.IsSuccess)
             {
-                return Ok(status.Message);
+                return Ok(new { Success = true, Message = status.Message! });
             }
             else
             {
-                return BadRequest(status.Message);
+                return BadRequest(new { Success = false, Message = status.Message! });
             }
         }
 
@@ -63,13 +67,12 @@ namespace WorkNetAPI.Controllers
             var status = await _authService.RegisterCandidate(candidateRegisterDTO);
             if (status.IsSuccess)
             {
-                return Ok(status.Message);
+                return Ok(new { Success = true, Message = status.Message! });
             }
             else
             {
-                return BadRequest(status.Message);
+                return BadRequest(new { Success = false, Message = status.Message! });
             }
-
         }
     }
 }

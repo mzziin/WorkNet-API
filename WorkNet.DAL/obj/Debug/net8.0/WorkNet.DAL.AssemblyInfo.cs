@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkNet.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee2997d55cce0ad63d019e0a8f0b43225d12f430")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3def20c387a28059ff0559b4545d3704e58b4021")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkNet.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkNet.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

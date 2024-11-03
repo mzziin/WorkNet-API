@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WorkNet.BLL.SecurityServices;
 using WorkNet.BLL.Services;
 using WorkNet.BLL.Services.IServices;
 using WorkNet.DAL.Data;
@@ -15,11 +16,12 @@ namespace WorkNet.BLL
             services.AddDbContext<WorkNetDbContext>(options => options.UseSqlServer(connectionString));
         }
 
-        public static void InjectServices(this IServiceCollection services)
+        public static void RegisterServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddSingleton<JWTService>();
         }
-        public static void InjectRepositories(this IServiceCollection services)
+        public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICandidateRepository, CandidateRepository>();
