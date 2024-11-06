@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkNet.BLL.DTOs;
+using WorkNet.BLL.DTOs.CandidateDTOs;
+using WorkNet.BLL.DTOs.EmployerDTOs;
 using WorkNet.BLL.SecurityServices;
 using WorkNet.BLL.Services.IServices;
 
@@ -22,15 +24,12 @@ namespace WorkNetAPI.Controllers
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var user = await _authService.Login(loginDTO);
             if (user == null)
-            {
                 return Unauthorized(new { Success = false, Message = "Invalid username or password" });
-            }
+
             var token = _jwtService.GenerateJwtToken(user);
             return Ok(new { Success = true, Message = "Login successfull", User = user, Token = token });
         }
@@ -40,19 +39,13 @@ namespace WorkNetAPI.Controllers
         public async Task<IActionResult> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var status = await _authService.RegisterEmployer(employerRegisterDTO);
-            if (status.IsSuccess)
-            {
-                return Ok(new { Success = true, Message = status.Message! });
-            }
+            if (status)
+                return Ok(new { Success = true, Message = "Employer registered successfully"! });
             else
-            {
-                return BadRequest(new { Success = false, Message = status.Message! });
-            }
+                return BadRequest(new { Success = false, Message = "Employer already exists" });
         }
 
         [HttpPost]
@@ -60,19 +53,14 @@ namespace WorkNetAPI.Controllers
         public async Task<IActionResult> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var status = await _authService.RegisterCandidate(candidateRegisterDTO);
-            if (status.IsSuccess)
-            {
-                return Ok(new { Success = true, Message = status.Message! });
-            }
+
+            if (status)
+                return Ok(new { Success = true, Message = "Candidate registered successfully"! });
             else
-            {
-                return BadRequest(new { Success = false, Message = status.Message! });
-            }
+                return BadRequest(new { Success = false, Message = "Candidate already exists" });
         }
     }
 }

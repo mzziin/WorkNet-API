@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkNet.BLL.DTOs
+namespace WorkNet.BLL.DTOs.EmployerDTOs
 {
     public class EmployerRegisterDTO
     {
@@ -17,9 +17,6 @@ namespace WorkNet.BLL.DTOs
         [Required]
         public required string Industry { get; set; }
 
-        [Required]
-        [RegularExpression("Candidate|Employer", ErrorMessage = "Role must be either 'Candidate' or 'Employer'")]
-        public required string Role { get; set; }
 
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]

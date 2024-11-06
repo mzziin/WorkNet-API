@@ -1,4 +1,6 @@
 ﻿using WorkNet.BLL.DTOs;
+using WorkNet.BLL.DTOs.CandidateDTOs;
+using WorkNet.BLL.DTOs.EmployerDTOs;
 using WorkNet.BLL.SecurityServices;
 using WorkNet.BLL.Services.IServices;
 using WorkNet.DAL.Models;
@@ -16,15 +18,13 @@ namespace WorkNet.BLL.Services
             _userRepository = userRepository;
             _candidateRepository = candidateRepository;
             _employerRepository = employerRepository;
-
         }
 
         public async Task<UserDTO?> Login(LoginDTO loginDTO)
         {
             if (loginDTO == null || string.IsNullOrEmpty(loginDTO.Email) || string.IsNullOrEmpty(loginDTO.Password))
             {
-                //log a argument null exception
-                return null;
+                throw new ArgumentNullException(nameof(loginDTO));
             }
 
             var user = await _userRepository.GetUser(loginDTO.Email);
@@ -37,35 +37,22 @@ namespace WorkNet.BLL.Services
             return null;
         }
 
-        public async Task<OperationResult> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
+        public async Task<bool> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
         {
-            if (employerRegisterDTO == null)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "Invalid registration details."
-                };
-            }
+            ArgumentNullException.ThrowIfNull(employerRegisterDTO);
 
             var user = await _userRepository.GetUser(employerRegisterDTO.Email);
             if (user != null)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "User already exists"
-                };
-            }
+                return false;
 
             int uId = await _userRepository.AddUser(new User
             {
                 Email = employerRegisterDTO.Email,
-                Role = employerRegisterDTO.Role,
+                Role = "Employer",
                 PasswordHash = HashingService.HashPassword(employerRegisterDTO.Password)!
             });
 
-            bool status = await _employerRepository.AddEmployer(new Employer
+            return await _employerRepository.AddEmployer(new Employer
             {
                 UserId = uId,
                 CompanyName = employerRegisterDTO.CompanyName,
@@ -73,53 +60,24 @@ namespace WorkNet.BLL.Services
                 ContactPerson = employerRegisterDTO.ContactPerson,
                 Industry = employerRegisterDTO.Industry
             });
-            if (status)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = true,
-                    Message = "Employer registered successfully"
-                };
-            }
-            else
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong while adding to database"
-                };
-            }
         }
 
-        public async Task<OperationResult> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
+        public async Task<bool> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
         {
-            if (candidateRegisterDTO == null)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "Invalid registration details."
-                };
-            }
+            ArgumentNullException.ThrowIfNull(candidateRegisterDTO);
 
             var user = await _userRepository.GetUser(candidateRegisterDTO.Email);
             if (user != null)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "User already exists"
-                };
-            }
+                return false;
 
             int uId = await _userRepository.AddUser(new User
             {
                 Email = candidateRegisterDTO.Email,
-                Role = candidateRegisterDTO.Role,
+                Role = "Candidate",
                 PasswordHash = HashingService.HashPassword(candidateRegisterDTO.Password)!
             });
 
-            bool status = await _candidateRepository.AddCandidate(new Candidate
+            return await _candidateRepository.AddCandidate(new Candidate
             {
                 UserId = uId,
                 FullName = candidateRegisterDTO.FullName,
@@ -129,23 +87,6 @@ namespace WorkNet.BLL.Services
                 ResumePath = candidateRegisterDTO.ResumePath,
                 Skills = null
             });
-
-            if (status)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = true,
-                    Message = "Candidate registered successfully"
-                };
-            }
-            else
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "Something went wrong while adding to database"
-                };
-            }
         }
     }
 }

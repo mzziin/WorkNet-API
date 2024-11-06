@@ -18,9 +18,8 @@ namespace WorkNet.DAL.Repositories
             {
                 var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == passwordHash);
                 if (user == null)
-                {
                     return null;
-                }
+
                 return user;
             }
             catch (Exception ex)
@@ -31,29 +30,19 @@ namespace WorkNet.DAL.Repositories
 
         public async Task<User?> GetUser(string email)
         {
-            try
-            {
-                return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentNullException(nameof(email), "Email cannot be null");
+
+            return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
         public async Task<int> AddUser(User user)
         {
-            try
-            {
-                await _db.Users.AddAsync(user);
-                await _db.SaveChangesAsync();
-                return user.UserId;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
+            if (user == null)
+                throw new ArgumentNullException(nameof(user), "User cannot be null");
+
+            await _db.Users.AddAsync(user);
+            await _db.SaveChangesAsync();
+            return user.UserId;
         }
-
-
     }
 }

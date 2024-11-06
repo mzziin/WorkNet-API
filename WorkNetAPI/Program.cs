@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WorkNet.BLL;
+using WorkNet.BLL.Services;
+using WorkNet.BLL.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,10 @@ builder.Services.RegisterDbContext(connectionString);
 
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<IEmployerService, EmployerService>();
 
 builder.Services.AddAuthentication(options =>
 {

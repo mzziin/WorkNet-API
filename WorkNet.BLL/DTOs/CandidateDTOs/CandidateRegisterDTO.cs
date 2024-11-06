@@ -1,16 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkNet.BLL.DTOs
+namespace WorkNet.BLL.DTOs.CandidateDTOs
 {
     public class CandidateRegisterDTO
     {
         [Required]
         [StringLength(100, MinimumLength = 3)]
         public required string FullName { get; set; }
-
-        [Required]
-        [RegularExpression("Candidate|Employer", ErrorMessage = "Role must be either 'Candidate' or 'Employer'")]
-        public required string Role { get; set; }
 
         [Required]
         [Phone(ErrorMessage = "Invalid phone number format.")]
