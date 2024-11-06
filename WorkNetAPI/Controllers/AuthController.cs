@@ -30,12 +30,12 @@ namespace WorkNetAPI.Controllers
 
             var user = await _authService.Login(loginDTO);
             if (user == null)
-                return Unauthorized(new { Success = false, Message = "Invalid username or password" });
+                return Unauthorized(new { status = "fail", Message = "Invalid username or password" });
 
             var token = _jwtService.GenerateJwtToken(user);
 
             _logger.LogInformation(5, "{Email} Logged in successfully", loginDTO.Email);
-            return Ok(new { Success = true, Message = "Login successfull", User = user, Token = token });
+            return Ok(new { status = "success", data = new { User = user, Token = token } });
         }
 
         [HttpPost]
@@ -47,9 +47,9 @@ namespace WorkNetAPI.Controllers
 
             var status = await _authService.RegisterEmployer(employerRegisterDTO);
             if (status)
-                return Ok(new { Success = true, Message = "Employer registered successfully"! });
+                return Ok(new { status = "success", Message = "Employer registered successfully"! });
             else
-                return BadRequest(new { Success = false, Message = "Employer already exists" });
+                return BadRequest(new { status = "fail", Message = "Employer already exists" });
         }
 
         [HttpPost]
@@ -62,9 +62,9 @@ namespace WorkNetAPI.Controllers
             var status = await _authService.RegisterCandidate(candidateRegisterDTO);
 
             if (status)
-                return Ok(new { Success = true, Message = "Candidate registered successfully"! });
+                return Ok(new { status = "success", Message = "Candidate registered successfully" });
             else
-                return BadRequest(new { Success = false, Message = "Candidate already exists" });
+                return BadRequest(new { status = "fail", Message = "Candidate already exists" });
         }
     }
 }

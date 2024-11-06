@@ -21,9 +21,9 @@ namespace WorkNetAPI.Controllers
         {
             var candidate = await _candidateService.GetCandidate(cId);
             if (candidate == null)
-                return NotFound(new { success = false, message = "Candidate not found" });
+                return NotFound(new { status = "fail", message = "Candidate not found" });
 
-            return Ok(new { success = true, message = "Candidate retrieved successfully", candidate });
+            return Ok(new { status = "success", data = new { candidate = candidate! } });
         }
 
         [HttpPut("{cId}")]
@@ -31,18 +31,18 @@ namespace WorkNetAPI.Controllers
         {
             var status = await _candidateService.UpdateCandidate(cId, candidateUpdateDTO);
             if (status.IsSuccess)
-                return Ok(new { success = true, message = status.Message });
+                return Ok(new { status = "success", message = status.Message });
 
-            return BadRequest(new { success = false, message = status.Message });
+            return NotFound(new { status = "fail", message = status.Message });
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteCandidate(int cId)
         {
             var status = await _candidateService.DeleteCandidate(cId);
             if (status.IsSuccess)
-                return Ok(new { success = true, message = status.Message });
+                return Ok(new { status = "success", message = status.Message });
 
-            return NotFound(new { success = false, message = status.Message });
+            return NotFound(new { status = "fail", message = status.Message });
         }
     }
 }

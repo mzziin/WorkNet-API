@@ -23,37 +23,42 @@ namespace WorkNetAPI.Controllers
         {
             var employer = await _employerService.GetByEmployerId(eId);
             if (employer == null)
-                return NotFound(new { success = false, Message = "Employer Not Found" });
+                return NotFound(new { status = "fail", Message = "Employer Not Found" });
 
-            return Ok(new { success = true, Message = "Employer retrieved successfully", employer = employer! });
+            return Ok(new
+            {
+                status = "success",
+                data = new { employer = employer! }
+            });
         }
+
 
         [HttpPut("{eId}")]
         public async Task<IActionResult> Update(int eId, EmployerUpdateDTO employerUpdateDTO)
         {
             if (employerUpdateDTO == null || !ModelState.IsValid)
-                return BadRequest(new { success = false, Message = "Employer details are not valid", modelstate = ModelState });
+                return BadRequest(new { status = "fail", Message = "Employer details are not valid", modelstate = ModelState });
 
             var result = await _employerService.UpdateEmployer(eId, employerUpdateDTO);
 
             if (result.IsSuccess)
-                return Ok(new { success = true, message = result.Message });
+                return Ok(new { status = "success", message = result.Message });
 
-            return BadRequest(new { success = false, message = result.Message });
+            return BadRequest(new { status = "fail", message = result.Message });
         }
 
         [HttpDelete("{eId}")]
         public async Task<IActionResult> Delete(int eId)
         {
             if (eId <= 0)
-                return BadRequest(new { success = false, Message = "Invalid Id" });
+                return BadRequest(new { status = "fail", Message = "Invalid Id" });
 
             var result = await _employerService.DeleteEmployer(eId);
 
             if (result.IsSuccess)
-                return Ok(new { success = true, message = result.Message });
+                return Ok(new { status = "success", message = result.Message });
 
-            return NotFound(new { success = false, message = result.Message });
+            return NotFound(new { status = "fail", message = result.Message });
         }
     }
 }

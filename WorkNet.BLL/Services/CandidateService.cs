@@ -88,7 +88,7 @@ namespace WorkNet.BLL.Services
                 return new OperationResult
                 {
                     IsSuccess = false,
-                    Message = "Something went wrong while updating"
+                    Message = "Candidate not found to update"
                 };
             }
             return new OperationResult

@@ -9,6 +9,17 @@ using WorkNet.BLL.Services.IServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var AllowAllpolicy = "AllowAll";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowAllpolicy,
+    policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddControllers();
 // httplogging
@@ -70,6 +81,8 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+app.UseCors(AllowAllpolicy);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -82,6 +95,7 @@ app.UseAuthorization();
 
 // log http requests
 app.UseHttpLogging();
+
 app.MapControllers();
 
 app.Run();
