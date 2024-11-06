@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WorkNet.BLL;
@@ -10,7 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// httplogging
+builder.Services.AddHttpLogging(logging =>
+{
+    // Not logging body content to prevent exposure of sensitive information (e.g., passwords, personal data)
+    logging.LoggingFields = HttpLoggingFields.RequestHeaders | HttpLoggingFields.ResponseHeaders;
+    logging.RequestBodyLogLimit = 4096; // Set limit for request body
+    logging.ResponseBodyLogLimit = 4096; // Set limit for response body
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -18,6 +26,7 @@ builder.Services.AddSwaggerGen();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.RegisterDbContext(connectionString);
 
+// services from bll
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
 
@@ -25,6 +34,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<IEmployerService, EmployerService>();
 
+// jwt implementation
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,6 +59,15 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireEmployerRole", policy => policy.RequireRole("Employer"));
 });
 
+// log in json format to console
+/*builder.Logging.AddJsonConsole(options =>
+{
+    options.JsonWriterOptions = new()
+    {
+        Indented = true,
+    };
+});*/
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +80,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
+// log http requests
+app.UseHttpLogging();
 app.MapControllers();
 
 app.Run();

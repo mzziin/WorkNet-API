@@ -13,10 +13,12 @@ namespace WorkNetAPI.Controllers
     {
         private readonly IAuthService _authService;
         private readonly JWTService _jwtService;
-        public AuthController(IAuthService authService, JWTService jwtService)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(IAuthService authService, JWTService jwtService, ILogger<AuthController> logger)
         {
             _authService = authService;
             _jwtService = jwtService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -31,6 +33,8 @@ namespace WorkNetAPI.Controllers
                 return Unauthorized(new { Success = false, Message = "Invalid username or password" });
 
             var token = _jwtService.GenerateJwtToken(user);
+
+            _logger.LogInformation(5, "{Email} Logged in successfully", loginDTO.Email);
             return Ok(new { Success = true, Message = "Login successfull", User = user, Token = token });
         }
 
