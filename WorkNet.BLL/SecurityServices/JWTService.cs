@@ -15,16 +15,26 @@ namespace WorkNet.BLL.SecurityServices
             _configuration = configuration;
         }
 
-        public string GenerateJwtToken(UserDTO user)
+        public string GenerateJwtToken(UserDTO user, int? candidateId = null, int? employerId = null)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.Role, user.Role!)
-
+                new Claim(ClaimTypes.Role, user.Role!),
+                new Claim("UserId", user.UserId.ToString()) // Add UserId as a unique identifier
             };
+
+            // Add either CandidateId or EmployerId based on role
+            if (candidateId.HasValue)
+            {
+                claims.Add(new Claim("CandidateId", candidateId.Value.ToString()));
+            }
+            if (employerId.HasValue)
+            {
+                claims.Add(new Claim("EmployerId", employerId.Value.ToString()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

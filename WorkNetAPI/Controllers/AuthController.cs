@@ -12,11 +12,21 @@ namespace WorkNetAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ICandidateService _candidateService;
+        private readonly IEmployerService _employerService;
         private readonly JWTService _jwtService;
         private readonly ILogger<AuthController> _logger;
-        public AuthController(IAuthService authService, JWTService jwtService, ILogger<AuthController> logger)
+        public AuthController(
+            IAuthService authService,
+            JWTService jwtService,
+            ILogger<AuthController> logger,
+            ICandidateService candidateService,
+            IEmployerService employerService
+            )
         {
             _authService = authService;
+            _candidateService = candidateService;
+            _employerService = employerService;
             _jwtService = jwtService;
             _logger = logger;
         }
@@ -32,7 +42,28 @@ namespace WorkNetAPI.Controllers
             if (user == null)
                 return Unauthorized(new { status = "fail", Message = "Invalid username or password" });
 
-            var token = _jwtService.GenerateJwtToken(user);
+            int? candidateId = null;
+            int? employerId = null;
+
+            // Get CandidateId or EmployerId based on role without modifying UserDTO
+            if (user.Role == "Candidate")
+            {
+                var candidate = await _candidateService.GetByUserId(user.UserId);
+                if (candidate == null)
+                    return Unauthorized(new { status = "fail", message = "Candidate not found" });
+
+                candidateId = candidate.CandidateId;
+            }
+            else if (user.Role == "Employer")
+            {
+                var employer = await _employerService.GetEmployer(user.UserId);
+                if (employer == null)
+                    return Unauthorized(new { status = "fail", message = "Employer not found" });
+
+                employerId = employer.EmployerId;
+            }
+
+            var token = _jwtService.GenerateJwtToken(user, candidateId, employerId);
 
             _logger.LogInformation(5, "{Email} Logged in successfully", loginDTO.Email);
             return Ok(new { status = "success", data = new { User = user, Token = token } });

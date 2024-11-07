@@ -21,6 +21,13 @@ namespace WorkNetAPI.Controllers
         [HttpGet("{eId}")]
         public async Task<IActionResult> GetEmployer(int eId)
         {
+            if (eId <= 0)
+                return BadRequest(new { status = "fail", Message = "Invalid Id" });
+
+            var employerIdClaim = User.FindFirst("EmployerId")?.Value;
+            if (eId != Convert.ToInt32(employerIdClaim))
+                return Unauthorized(new { status = "fail", message = "You are not authorized" });
+
             var employer = await _employerService.GetByEmployerId(eId);
             if (employer == null)
                 return NotFound(new { status = "fail", Message = "Employer Not Found" });
@@ -39,6 +46,10 @@ namespace WorkNetAPI.Controllers
             if (employerUpdateDTO == null || !ModelState.IsValid)
                 return BadRequest(new { status = "fail", Message = "Employer details are not valid", modelstate = ModelState });
 
+            var employerId = User.FindFirst("EmployerId")?.Value;
+            if (eId != Convert.ToInt32(employerId))
+                return Unauthorized(new { status = "fail", message = "You are not authorized" });
+
             var result = await _employerService.UpdateEmployer(eId, employerUpdateDTO);
 
             if (result.IsSuccess)
@@ -52,6 +63,10 @@ namespace WorkNetAPI.Controllers
         {
             if (eId <= 0)
                 return BadRequest(new { status = "fail", Message = "Invalid Id" });
+
+            var employerId = User.FindFirst("EmployerId")?.Value;
+            if (eId != Convert.ToInt32(employerId))
+                return Unauthorized(new { status = "fail", message = "You are not authorized" });
 
             var result = await _employerService.DeleteEmployer(eId);
 

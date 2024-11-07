@@ -40,6 +40,11 @@ namespace WorkNet.BLL.Services
 
             var candidate = await _candidateRepository.GetByCandidateId(cId);
 
+            if (candidate == null)
+            {
+                return null;
+            }
+
             var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
 
             return new outCandidateDTO
@@ -60,6 +65,11 @@ namespace WorkNet.BLL.Services
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(uId);
 
             var candidate = await _candidateRepository.GetByUserId(uId);
+
+            if (candidate == null)
+            {
+                return null;
+            }
 
             var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
 
