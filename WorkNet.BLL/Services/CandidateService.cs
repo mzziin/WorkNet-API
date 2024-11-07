@@ -47,6 +47,7 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidate.ContactNumber,
                 Experience = candidate.Experience,
                 ResumePath = candidate.ResumePath,
+                Skills = candidate.SkillsNavigation.ToList(),
             };
         }
 
@@ -64,6 +65,7 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidate.ContactNumber,
                 Experience = candidate.Experience,
                 ResumePath = candidate.ResumePath,
+                Skills = candidate.SkillsNavigation.ToList(),
             };
         }
 
@@ -79,6 +81,7 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidateUpdateDTO.ContactNumber,
                 Experience = candidateUpdateDTO.Experience,
                 ResumePath = candidateUpdateDTO.ResumePath,
+                SkillsNavigation = candidateUpdateDTO.Skills,
             };
 
             var status = await _candidateRepository.UpdateCandidate(candidate);

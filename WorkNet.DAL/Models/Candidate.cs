@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WorkNet.DAL.Models;
+﻿namespace WorkNet.DAL.Models;
 
 public partial class Candidate
 {
@@ -15,8 +12,6 @@ public partial class Candidate
 
     public string? Address { get; set; }
 
-    public string? Skills { get; set; }
-
     public int? Experience { get; set; }
 
     public string? ResumePath { get; set; }
@@ -25,5 +20,5 @@ public partial class Candidate
 
     public virtual User User { get; set; } = null!;
 
-    public virtual ICollection<Skill> SkillsNavigation { get; set; } = new List<Skill>();
+    public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 }

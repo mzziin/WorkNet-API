@@ -46,16 +46,13 @@ public partial class WorkNetDbContext : DbContext
             entity.Property(e => e.ResumePath)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Skills)
-                .HasMaxLength(255)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.User).WithMany(p => p.Candidates)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Candidates_Users");
 
-            entity.HasMany(d => d.SkillsNavigation).WithMany(p => p.Candidates)
+            entity.HasMany(d => d.Skills).WithMany(p => p.Candidates)
                 .UsingEntity<Dictionary<string, object>>(
                     "CandidateSkill",
                     r => r.HasOne<Skill>().WithMany()
