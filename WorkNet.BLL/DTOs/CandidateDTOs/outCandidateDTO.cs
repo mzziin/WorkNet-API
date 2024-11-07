@@ -1,6 +1,4 @@
-﻿using WorkNet.DAL.Models;
-
-namespace WorkNet.BLL.DTOs.CandidateDTOs
+﻿namespace WorkNet.BLL.DTOs.CandidateDTOs
 {
     public class outCandidateDTO
     {
@@ -17,6 +15,6 @@ namespace WorkNet.BLL.DTOs.CandidateDTOs
         public int? Experience { get; set; }
 
         public string? ResumePath { get; set; }
-        public List<Skill> Skills { get; set; } = new List<Skill>();
+        public List<string> Skills { get; set; } = new List<string>();
     }
 }

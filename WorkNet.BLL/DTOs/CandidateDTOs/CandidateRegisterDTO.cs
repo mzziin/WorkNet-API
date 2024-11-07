@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WorkNet.DAL.Models;
 
 namespace WorkNet.BLL.DTOs.CandidateDTOs
 {
@@ -21,7 +20,7 @@ namespace WorkNet.BLL.DTOs.CandidateDTOs
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public required string Email { get; set; }
-        public List<Skill> SkillNames { get; set; } = new List<Skill>();
+        public List<string> Skills { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -33,5 +32,10 @@ namespace WorkNet.BLL.DTOs.CandidateDTOs
         [DataType(DataType.Password)]
         public required string ConfirmPassword { get; set; }
 
+    }
+
+    public class SkillDTO
+    {
+        public string SkillName { get; set; }
     }
 }

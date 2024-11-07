@@ -58,7 +58,7 @@ public partial class WorkNetDbContext : DbContext
                     r => r.HasOne<Skill>().WithMany()
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Candidate__Skill__1F98B2C1"),
+                        .HasConstraintName("FK_CandidateSkills_Skills"),
                     l => l.HasOne<Candidate>().WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
@@ -159,9 +159,8 @@ public partial class WorkNetDbContext : DbContext
 
         modelBuilder.Entity<Skill>(entity =>
         {
-            entity.HasKey(e => e.SkillId).HasName("PK__Skills__DFA09187FBB345A7");
+            entity.HasKey(e => e.SkillId).HasName("PK__Skills__DFA091873F49F802");
 
-            entity.Property(e => e.SkillId).ValueGeneratedNever();
             entity.Property(e => e.SkillName)
                 .HasMaxLength(100)
                 .IsUnicode(false);

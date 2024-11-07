@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WorkNet.DAL.Data;
 using WorkNet.DAL.Models;
 using WorkNet.DAL.Repositories.IRepositories;
@@ -17,14 +18,18 @@ namespace WorkNet.DAL.Repositories
             if (uId <= 0)
                 throw new ArgumentOutOfRangeException(nameof(uId), "User ID must be greater than zero.");
 
-            return await _db.Candidates.FirstOrDefaultAsync(u => u.UserId == uId);
+            return await _db.Candidates
+                .Include(c => c.Skills)
+                .FirstOrDefaultAsync(u => u.UserId == uId);
         }
         public async Task<Candidate?> GetByCandidateId(int cId)
         {
             if (cId <= 0)
                 throw new ArgumentOutOfRangeException(nameof(cId), "Candidate ID must be greater than zero.");
 
-            return await _db.Candidates.FindAsync(cId);
+            return await _db.Candidates
+                .Include(c => c.Skills)
+                .FirstOrDefaultAsync(u => u.CandidateId == cId);
         }
         public async Task<bool> AddCandidate(Candidate candidate)
         {
@@ -67,7 +72,9 @@ namespace WorkNet.DAL.Repositories
         {
             ArgumentNullException.ThrowIfNull(candidate, nameof(candidate));
 
-            var candidateFromDb = await _db.Candidates.FindAsync(candidate.CandidateId);
+            var candidateFromDb = await _db.Candidates
+                                        .Include(c => c.Skills) // Include Skills for update tracking
+                                        .FirstOrDefaultAsync(c => c.CandidateId == candidate.CandidateId);
             if (candidateFromDb == null)
                 return false;
 
@@ -77,7 +84,37 @@ namespace WorkNet.DAL.Repositories
             candidateFromDb.Experience = candidate.Experience.HasValue && candidate.Experience > 0 ? candidate.Experience : candidateFromDb.Experience;
             candidateFromDb.ResumePath = string.IsNullOrWhiteSpace(candidate.ResumePath) ? candidateFromDb.ResumePath : candidate.ResumePath;
 
+            if (!candidate.Skills.IsNullOrEmpty())
+            {
+                var skillList = new List<Skill>();
+                var skillsFromDb = await GetAllSkills();
+
+                foreach (var skill in candidate.Skills)
+                {
+                    var existingSkill = skillsFromDb.FirstOrDefault(c =>
+                                            string.Equals(c.SkillName,
+                                            skill.SkillName.Trim(),
+                                            StringComparison.OrdinalIgnoreCase
+                                        ));
+
+                    if (existingSkill != null)
+                    {
+                        skillList.Add(existingSkill);
+                    }
+                    else
+                    {
+                        skillList.Add(new Skill { SkillName = skill.SkillName.Trim() });
+                    }
+                }
+                candidateFromDb.Skills.Clear();
+                candidateFromDb.Skills = skillList;
+            }
             return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<Skill>> GetAllSkills()
+        {
+            return await _db.Skills.ToListAsync();
         }
     }
 }

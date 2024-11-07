@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WorkNet.DAL.Models;
 
 namespace WorkNet.BLL.DTOs.CandidateDTOs
 {
@@ -14,6 +13,6 @@ namespace WorkNet.BLL.DTOs.CandidateDTOs
         public string? Address { get; set; }
         public int? Experience { get; set; }
         public string? ResumePath { get; set; }
-        public List<Skill>? Skills { get; set; }
+        public List<string> Skills { get; set; } = new List<string>();
     }
 }

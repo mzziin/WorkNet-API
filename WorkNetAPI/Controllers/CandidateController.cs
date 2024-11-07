@@ -16,10 +16,10 @@ namespace WorkNetAPI.Controllers
             _candidateService = candidateService;
         }
 
-        [HttpGet("{cId}")]
-        public async Task<IActionResult> GetCandidate(int cId)
+        [HttpGet("{uId}")]
+        public async Task<IActionResult> GetCandidate(int uId)
         {
-            var candidate = await _candidateService.GetCandidate(cId);
+            var candidate = await _candidateService.GetByUserId(uId);
             if (candidate == null)
                 return NotFound(new { status = "fail", message = "Candidate not found" });
 

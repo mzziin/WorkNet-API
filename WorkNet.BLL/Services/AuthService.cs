@@ -77,6 +77,23 @@ namespace WorkNet.BLL.Services
                 PasswordHash = HashingService.HashPassword(candidateRegisterDTO.Password)!
             });
 
+            var skillList = new List<Skill>();
+            var SkillsFromDb = await _candidateRepository.GetAllSkills();
+
+            foreach (var skill in candidateRegisterDTO.Skills)
+            {
+                var existingSkill = SkillsFromDb.FirstOrDefault(c => c.SkillName.ToLower() == skill.ToLower());
+
+                if (existingSkill != null)
+                {
+                    skillList.Add(existingSkill);
+                }
+                else
+                {
+                    skillList.Add(new Skill { SkillName = skill.Trim() });
+                }
+            }
+
             return await _candidateRepository.AddCandidate(new Candidate
             {
                 UserId = uId,
@@ -85,7 +102,7 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidateRegisterDTO.ContactNumber,
                 Experience = candidateRegisterDTO.Experience,
                 ResumePath = candidateRegisterDTO.ResumePath,
-                Skills = null
+                Skills = skillList
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using WorkNet.BLL.DTOs.CandidateDTOs;
+﻿using Microsoft.IdentityModel.Tokens;
+using WorkNet.BLL.DTOs.CandidateDTOs;
 using WorkNet.BLL.Services.IServices;
 using WorkNet.DAL.Models;
 using WorkNet.DAL.Repositories.IRepositories;
@@ -38,6 +39,9 @@ namespace WorkNet.BLL.Services
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cId);
 
             var candidate = await _candidateRepository.GetByCandidateId(cId);
+
+            var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
+
             return new outCandidateDTO
             {
                 CandidateId = candidate!.CandidateId,
@@ -47,15 +51,18 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidate.ContactNumber,
                 Experience = candidate.Experience,
                 ResumePath = candidate.ResumePath,
-                Skills = candidate.SkillsNavigation.ToList(),
+                Skills = skills
             };
         }
 
-        public async Task<outCandidateDTO?> GetCandidate(int uId)
+        public async Task<outCandidateDTO?> GetByUserId(int uId)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(uId);
 
             var candidate = await _candidateRepository.GetByUserId(uId);
+
+            var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
+
             return new outCandidateDTO
             {
                 CandidateId = candidate!.CandidateId,
@@ -65,13 +72,23 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidate.ContactNumber,
                 Experience = candidate.Experience,
                 ResumePath = candidate.ResumePath,
-                Skills = candidate.SkillsNavigation.ToList(),
+                Skills = skills
             };
         }
 
         public async Task<OperationResult> UpdateCandidate(int cId, CandidateUpdateDTO candidateUpdateDTO)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cId);
+
+            var skills = new List<Skill>();
+
+            if (!candidateUpdateDTO.Skills.IsNullOrEmpty())
+            {
+                foreach (var name in candidateUpdateDTO.Skills)
+                {
+                    skills.Add(new Skill { SkillName = name });
+                }
+            }
 
             var candidate = new Candidate
             {
@@ -81,7 +98,7 @@ namespace WorkNet.BLL.Services
                 ContactNumber = candidateUpdateDTO.ContactNumber,
                 Experience = candidateUpdateDTO.Experience,
                 ResumePath = candidateUpdateDTO.ResumePath,
-                SkillsNavigation = candidateUpdateDTO.Skills,
+                Skills = skills
             };
 
             var status = await _candidateRepository.UpdateCandidate(candidate);

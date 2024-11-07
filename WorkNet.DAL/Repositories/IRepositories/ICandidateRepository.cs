@@ -9,6 +9,7 @@ namespace WorkNet.DAL.Repositories.IRepositories
         Task<Candidate?> GetByCandidateId(int uId);
         Task<bool> UpdateCandidate(Candidate candidate);
         Task<bool> DeleteCandidate(Candidate candidate);
+        Task<List<Skill>> GetAllSkills();
 
     }
 }
