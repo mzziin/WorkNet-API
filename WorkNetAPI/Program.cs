@@ -45,6 +45,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<IEmployerService, EmployerService>();
 
+builder.Services.AddHttpContextAccessor();
+
 // jwt implementation
 builder.Services.AddAuthentication(options =>
 {

@@ -13,30 +13,28 @@ namespace WorkNetAPI.Controllers
     public class EmployerController : ControllerBase
     {
         private readonly IEmployerService _employerService;
-        public EmployerController(IEmployerService employerService)
+        private readonly IAuthService _authService;
+        public EmployerController(IEmployerService employerService, IAuthService authService)
         {
             _employerService = employerService;
+            _authService = authService;
         }
 
-        [HttpGet("{eId}")]
-        public async Task<IActionResult> GetEmployer(int eId)
+        [HttpGet("{uId}")]
+        public async Task<IActionResult> GetEmployer(int uId)
         {
-            if (eId <= 0)
+            if (uId <= 0)
                 return BadRequest(new { status = "fail", Message = "Invalid Id" });
 
-            var employerIdClaim = User.FindFirst("EmployerId")?.Value;
-            if (eId != Convert.ToInt32(employerIdClaim))
-                return Unauthorized(new { status = "fail", message = "You are not authorized" });
-
-            var employer = await _employerService.GetByEmployerId(eId);
-            if (employer == null)
-                return NotFound(new { status = "fail", Message = "Employer Not Found" });
-
-            return Ok(new
+            if (_authService.CheckIsAuthorized("UserId", uId))
             {
-                status = "success",
-                data = new { employer = employer! }
-            });
+                var employer = await _employerService.GetByUserId(uId);
+                if (employer == null)
+                    return NotFound(new { status = "fail", Message = "Employer Not Found" });
+
+                return Ok(new { status = "success", data = new { employer = employer! } });
+            }
+            return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
 
 
@@ -46,16 +44,15 @@ namespace WorkNetAPI.Controllers
             if (employerUpdateDTO == null || !ModelState.IsValid)
                 return BadRequest(new { status = "fail", Message = "Employer details are not valid", modelstate = ModelState });
 
-            var employerId = User.FindFirst("EmployerId")?.Value;
-            if (eId != Convert.ToInt32(employerId))
-                return Unauthorized(new { status = "fail", message = "You are not authorized" });
+            if (_authService.CheckIsAuthorized("EmployerId", eId))
+            {
+                var result = await _employerService.UpdateEmployer(eId, employerUpdateDTO);
+                if (result.IsSuccess)
+                    return Ok(new { status = "success", message = result.Message });
 
-            var result = await _employerService.UpdateEmployer(eId, employerUpdateDTO);
-
-            if (result.IsSuccess)
-                return Ok(new { status = "success", message = result.Message });
-
-            return BadRequest(new { status = "fail", message = result.Message });
+                return BadRequest(new { status = "fail", message = result.Message });
+            }
+            return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
 
         [HttpDelete("{eId}")]
@@ -64,16 +61,15 @@ namespace WorkNetAPI.Controllers
             if (eId <= 0)
                 return BadRequest(new { status = "fail", Message = "Invalid Id" });
 
-            var employerId = User.FindFirst("EmployerId")?.Value;
-            if (eId != Convert.ToInt32(employerId))
-                return Unauthorized(new { status = "fail", message = "You are not authorized" });
+            if (_authService.CheckIsAuthorized("EmployerId", eId))
+            {
+                var result = await _employerService.DeleteEmployer(eId);
+                if (result.IsSuccess)
+                    return Ok(new { status = "success", message = result.Message });
 
-            var result = await _employerService.DeleteEmployer(eId);
-
-            if (result.IsSuccess)
-                return Ok(new { status = "success", message = result.Message });
-
-            return NotFound(new { status = "fail", message = result.Message });
+                return NotFound(new { status = "fail", message = result.Message });
+            }
+            return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
     }
 }

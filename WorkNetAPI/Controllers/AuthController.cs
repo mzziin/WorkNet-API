@@ -56,7 +56,7 @@ namespace WorkNetAPI.Controllers
             }
             else if (user.Role == "Employer")
             {
-                var employer = await _employerService.GetEmployer(user.UserId);
+                var employer = await _employerService.GetByUserId(user.UserId);
                 if (employer == null)
                     return Unauthorized(new { status = "fail", message = "Employer not found" });
 
@@ -91,7 +91,6 @@ namespace WorkNetAPI.Controllers
                 return BadRequest(ModelState);
 
             var status = await _authService.RegisterCandidate(candidateRegisterDTO);
-
             if (status)
                 return Ok(new { status = "success", Message = "Candidate registered successfully" });
             else
