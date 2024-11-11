@@ -6,12 +6,12 @@
 
         public int UserId { get; set; }
 
-        public string CompanyName { get; set; } = null!;
+        public string CompanyName { get; set; }
 
-        public string ContactPerson { get; set; } = null!;
+        public string ContactPerson { get; set; }
 
-        public string Address { get; set; } = null!;
+        public string Address { get; set; }
 
-        public string Industry { get; set; } = null!;
+        public string Industry { get; set; }
     }
 }

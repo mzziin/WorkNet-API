@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WorkNet.DAL.Models;
+﻿namespace WorkNet.DAL.Models;
 
 public partial class JobApplication
 {
@@ -11,7 +8,7 @@ public partial class JobApplication
 
     public int CandidateId { get; set; }
 
-    public DateTime? ApplicationDate { get; set; }
+    public DateTime? ApplicationDate { get; set; } = DateTime.UtcNow;
 
     public string Status { get; set; } = null!;
 

@@ -9,5 +9,6 @@ namespace WorkNet.BLL.Services.IServices
         public Task<UserDTO?> Login(LoginDTO loginDTO);
         public Task<bool> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO);
         public Task<bool> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO);
+        public bool CheckIsAuthorized(string claim, int id);
     }
 }

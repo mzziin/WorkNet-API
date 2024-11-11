@@ -51,6 +51,7 @@ namespace WorkNetAPI.Controllers
             }
             return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteCandidate(int cId)
         {

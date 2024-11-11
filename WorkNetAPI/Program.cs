@@ -33,6 +33,9 @@ builder.Services.AddHttpLogging(logging =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Db Connection 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.RegisterDbContext(connectionString);
@@ -44,6 +47,7 @@ builder.Services.RegisterServices();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<IEmployerService, EmployerService>();
+builder.Services.AddScoped<IJobService, JobService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -81,6 +85,8 @@ builder.Services.AddAuthorization(options =>
     };
 });*/
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 var app = builder.Build();
 
 app.UseCors(AllowAllpolicy);
@@ -91,6 +97,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(_ => { });
 
 app.UseAuthentication();
 app.UseAuthorization();

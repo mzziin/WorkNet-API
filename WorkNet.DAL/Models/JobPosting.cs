@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WorkNet.DAL.Models;
+﻿namespace WorkNet.DAL.Models;
 
 public partial class JobPosting
 {

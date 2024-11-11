@@ -13,26 +13,6 @@ namespace WorkNet.BLL.Services
         {
             _candidateRepository = candidateRepository;
         }
-        public async Task<OperationResult> DeleteCandidate(int cId)
-        {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cId);
-
-            var candidate = await _candidateRepository.GetByCandidateId(cId);
-            if (candidate == null)
-            {
-                return new OperationResult
-                {
-                    IsSuccess = false,
-                    Message = "Candidate not found"
-                };
-            }
-            await _candidateRepository.DeleteCandidate(candidate);
-            return new OperationResult
-            {
-                IsSuccess = true,
-                Message = "Candidate removed successfully"
-            };
-        }
 
         public async Task<outCandidateDTO?> GetByCandidateId(int cId)
         {
@@ -125,6 +105,26 @@ namespace WorkNet.BLL.Services
             {
                 IsSuccess = true,
                 Message = "Candidate updated successfully"
+            };
+        }
+        public async Task<OperationResult> DeleteCandidate(int cId)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cId);
+
+            var candidate = await _candidateRepository.GetByCandidateId(cId);
+            if (candidate == null)
+            {
+                return new OperationResult
+                {
+                    IsSuccess = false,
+                    Message = "Candidate not found"
+                };
+            }
+            await _candidateRepository.DeleteCandidate(candidate);
+            return new OperationResult
+            {
+                IsSuccess = true,
+                Message = "Candidate removed successfully"
             };
         }
     }

@@ -13,7 +13,7 @@ namespace WorkNet.BLL.Services
             _employerRepository = employerRepository;
         }
 
-        public async Task<OutEmployerDTO?> GetEmployer(int uId)
+        public async Task<OutEmployerDTO?> GetByUserId(int uId)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(uId);
 
@@ -24,6 +24,7 @@ namespace WorkNet.BLL.Services
             return new OutEmployerDTO
             {
                 EmployerId = user.EmployerId,
+                UserId = user.UserId,
                 CompanyName = user.CompanyName,
                 Address = user.Address,
                 Industry = user.Industry,

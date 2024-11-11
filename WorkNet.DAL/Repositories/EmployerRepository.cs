@@ -42,14 +42,14 @@ namespace WorkNet.DAL.Repositories
             if (employer == null)
                 throw new ArgumentNullException("Employer cannot be null", nameof(employer));
 
-            var emp = await _db.Employers.FindAsync(employer.EmployerId);
-            if (emp == null)
+            var employerFromDb = await _db.Employers.FindAsync(employer.EmployerId);
+            if (employerFromDb == null)
                 return false;
 
-            emp.CompanyName = string.IsNullOrWhiteSpace(employer.CompanyName) ? emp.CompanyName : employer.CompanyName;
-            emp.Address = string.IsNullOrWhiteSpace(employer.Address) ? emp.Address : employer.Address;
-            emp.ContactPerson = string.IsNullOrWhiteSpace(employer.ContactPerson) ? emp.ContactPerson : employer.ContactPerson;
-            emp.Industry = string.IsNullOrWhiteSpace(employer.Industry) ? emp.Industry : employer.Industry;
+            employerFromDb.CompanyName = string.IsNullOrWhiteSpace(employer.CompanyName) ? employerFromDb.CompanyName : employer.CompanyName;
+            employerFromDb.Address = string.IsNullOrWhiteSpace(employer.Address) ? employerFromDb.Address : employer.Address;
+            employerFromDb.ContactPerson = string.IsNullOrWhiteSpace(employer.ContactPerson) ? employerFromDb.ContactPerson : employer.ContactPerson;
+            employerFromDb.Industry = string.IsNullOrWhiteSpace(employer.Industry) ? employerFromDb.Industry : employer.Industry;
 
             return await _db.SaveChangesAsync() > 0;
         }

@@ -1,4 +1,5 @@
-﻿using WorkNet.BLL.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using WorkNet.BLL.DTOs;
 using WorkNet.BLL.DTOs.CandidateDTOs;
 using WorkNet.BLL.DTOs.EmployerDTOs;
 using WorkNet.BLL.SecurityServices;
@@ -13,11 +14,18 @@ namespace WorkNet.BLL.Services
         private readonly IUserRepository _userRepository;
         private readonly ICandidateRepository _candidateRepository;
         private readonly IEmployerRepository _employerRepository;
-        public AuthService(IUserRepository userRepository, ICandidateRepository candidateRepository, IEmployerRepository employerRepository)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public AuthService(
+            IUserRepository userRepository,
+            ICandidateRepository candidateRepository,
+            IEmployerRepository employerRepository,
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _userRepository = userRepository;
             _candidateRepository = candidateRepository;
             _employerRepository = employerRepository;
+            _contextAccessor = httpContextAccessor;
         }
 
         public async Task<UserDTO?> Login(LoginDTO loginDTO)
@@ -104,6 +112,14 @@ namespace WorkNet.BLL.Services
                 ResumePath = candidateRegisterDTO.ResumePath,
                 Skills = skillList
             });
+        }
+
+        public bool CheckIsAuthorized(string claim, int id)
+        {
+            var claimValue = _contextAccessor.HttpContext.User.FindFirst(claim)?.Value;
+            if (id != Convert.ToInt32(claimValue))
+                return false;
+            return true;
         }
     }
 }

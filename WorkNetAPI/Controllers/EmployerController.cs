@@ -37,7 +37,6 @@ namespace WorkNetAPI.Controllers
             return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
 
-
         [HttpPut("{eId}")]
         public async Task<IActionResult> Update(int eId, EmployerUpdateDTO employerUpdateDTO)
         {
