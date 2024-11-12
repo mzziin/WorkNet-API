@@ -87,37 +87,5 @@ namespace WorkNet.BLL.Services
 
             return _mapper.Map<outJobDTO>(job);
         }
-
-
-        public async Task<OperationResult> SubmitJobApplication(int jobId, int candidateId)
-        {
-            if (candidateId <= 0)
-                throw new ArgumentException("Invalid candidate ID", nameof(candidateId));
-
-            if (jobId <= 0)
-                throw new ArgumentException("Invalid job ID", nameof(jobId));
-
-            var job = await _jobRepository.GetJob(jobId);
-            if (job == null)
-                return new OperationResult { IsSuccess = false, Message = "Job not found" };
-
-            // check wheather candidate already applied or not 
-            var response = await _jobRepository.GetJobApplication(jobId, candidateId);
-            if (response != null)
-                return new OperationResult { IsSuccess = false, Message = "You already applied for this job" };
-
-            var jobApplication = new JobApplication
-            {
-                CandidateId = candidateId,
-                JobId = jobId,
-                Status = "Applied"
-            };
-
-            var status = await _jobRepository.SubmitJobApplication(jobApplication);
-            if (!status)
-                return new OperationResult { IsSuccess = false, Message = "Failed to submit application" };
-            else
-                return new OperationResult { IsSuccess = true, Message = "Application submitted successfully" };
-        }
     }
 }

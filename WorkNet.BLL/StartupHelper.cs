@@ -27,6 +27,7 @@ namespace WorkNet.BLL
             services.AddScoped<ICandidateRepository, CandidateRepository>();
             services.AddScoped<IEmployerRepository, EmployerRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
         }
     }
 }

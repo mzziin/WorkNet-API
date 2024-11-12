@@ -10,6 +10,5 @@ namespace WorkNet.DAL.Repositories.IRepositories
         Task<bool> DeleteJob(JobPosting job);
         Task<bool> UpdateJob(JobPosting job);
         Task<bool> SubmitJobApplication(JobApplication jobApplication);
-        Task<JobApplication?> GetJobApplication(int jobId, int candidateId);
     }
 }

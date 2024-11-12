@@ -30,7 +30,7 @@ namespace WorkNet.DAL.Repositories
 
         public async Task<List<JobPosting>> GetAllJobs()
         {
-            return await _db.JobPostings.ToListAsync();
+            return await _db.JobPostings.AsNoTracking().ToListAsync();
         }
 
         public async Task<JobPosting?> GetJob(int jobId)
@@ -57,10 +57,7 @@ namespace WorkNet.DAL.Repositories
 
             return await _db.SaveChangesAsync() > 0;
         }
-        public async Task<JobApplication?> GetJobApplication(int jobId, int candidateId)
-        {
-            return await _db.JobApplications.FirstOrDefaultAsync(j => j.JobId == jobId && j.CandidateId == candidateId);
-        }
+
 
         public async Task<bool> SubmitJobApplication(JobApplication jobApplication)
         {

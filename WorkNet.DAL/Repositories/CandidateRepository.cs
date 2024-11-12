@@ -19,6 +19,7 @@ namespace WorkNet.DAL.Repositories
                 throw new ArgumentOutOfRangeException(nameof(uId), "User ID must be greater than zero.");
 
             return await _db.Candidates
+                .AsNoTracking()
                 .Include(c => c.Skills)
                 .FirstOrDefaultAsync(u => u.UserId == uId);
         }
@@ -28,6 +29,7 @@ namespace WorkNet.DAL.Repositories
                 throw new ArgumentOutOfRangeException(nameof(cId), "Candidate ID must be greater than zero.");
 
             return await _db.Candidates
+                .AsNoTracking()
                 .Include(c => c.Skills)
                 .FirstOrDefaultAsync(u => u.CandidateId == cId);
         }
@@ -95,7 +97,7 @@ namespace WorkNet.DAL.Repositories
                                             string.Equals(c.SkillName,
                                             skill.SkillName.Trim(),
                                             StringComparison.OrdinalIgnoreCase
-                                        ));
+                                            ));
 
                     if (existingSkill != null)
                     {

@@ -12,28 +12,13 @@ namespace WorkNet.DAL.Repositories
         {
             _db = workNetDbContext;
         }
-        /*public async Task<User?> GetUser(string email, string passwordHash)
-        {
-            try
-            {
-                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == passwordHash);
-                if (user == null)
-                    return null;
-
-                return user;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }*/
 
         public async Task<User?> GetUser(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentNullException(nameof(email), "Email cannot be null");
 
-            return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
         public async Task<int> AddUser(User user)
         {

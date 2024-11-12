@@ -1,4 +1,4 @@
-﻿namespace WorkNet.BLL.DTOs.JobDTOs
+﻿namespace WorkNet.BLL.DTOs.JobApplicationDTOs
 {
     public class ApplyJobDTO
     {

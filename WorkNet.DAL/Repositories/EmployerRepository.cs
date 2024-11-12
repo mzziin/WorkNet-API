@@ -27,7 +27,9 @@ namespace WorkNet.DAL.Repositories
             if (uId <= 0)
                 throw new ArgumentException("UserId cannot be less than or equal to zero", nameof(uId));
 
-            return await _db.Employers.FirstOrDefaultAsync(u => u.UserId == uId);
+            return await _db.Employers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.UserId == uId);
         }
         public async Task<Employer?> GetByEmployerId(int eId)
         {

@@ -52,7 +52,7 @@ namespace WorkNetAPI.Controllers
             return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
 
-        [HttpDelete]
+        [HttpDelete("{cId}")]
         public async Task<IActionResult> DeleteCandidate(int cId)
         {
             if (cId <= 0)

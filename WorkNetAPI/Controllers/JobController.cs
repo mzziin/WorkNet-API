@@ -61,16 +61,5 @@ namespace WorkNetAPI.Controllers
             else
                 return BadRequest(new { status = false, message = response.Message });
         }
-
-        [HttpPost("apply")]
-        [Authorize(Policy = "RequireCandidateRole")]
-        public async Task<IActionResult> ApplyJobApplication([FromBody] ApplyJobDTO applyJobDTO)
-        {
-            var response = await _jobService.SubmitJobApplication(applyJobDTO.JobId, applyJobDTO.CandidateId);
-            if (response.IsSuccess)
-                return Ok(new { status = true, message = "Applied successfully" });
-            else
-                return BadRequest(new { status = false, message = response.Message });
-        }
     }
 }
