@@ -32,7 +32,5 @@ namespace WorkNetAPI.Controllers
             var job = await _jobService.GetJob(jobId);
             return Ok(new { status = true, data = new { Job = job } });
         }
-
-
     }
 }

@@ -72,21 +72,29 @@ namespace WorkNetAPI.Controllers
         [HttpGet("{cId}/applications")]
         public async Task<IActionResult> GetApplicationsByCandidateId(int cId)
         {
-            var applications = await _candidateService.GetAllJobApplicationsByCandidateId(cId);
-            if (applications != null)
-                return Ok(new { status = true, data = new { JobApplications = applications } });
-            else
-                return NotFound(new { status = false, message = "Application not found" });
+            if (_authService.CheckIsAuthorized("CandidateId", cId))
+            {
+                var applications = await _candidateService.GetAllJobApplicationsByCandidateId(cId);
+                if (applications != null)
+                    return Ok(new { status = true, data = new { JobApplications = applications } });
+                else
+                    return NotFound(new { status = false, message = "Application not found" });
+            }
+            return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
 
         [HttpPost("{cId}/apply/{jobId}")]
         public async Task<IActionResult> ApplyJobApplication(int cId, int jobId)
         {
-            var response = await _candidateService.ApplyJobApplication(cId, jobId);
-            if (response.IsSuccess)
-                return Ok(new { status = true, message = "Applied successfully" });
-            else
-                return BadRequest(new { status = false, message = response.Message });
+            if (_authService.CheckIsAuthorized("CandidateId", cId))
+            {
+                var response = await _candidateService.ApplyJobApplication(cId, jobId);
+                if (response.IsSuccess)
+                    return Ok(new { status = true, message = "Applied successfully" });
+                else
+                    return BadRequest(new { status = false, message = response.Message });
+            }
+            return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
     }
 }
