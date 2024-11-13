@@ -6,10 +6,11 @@ namespace WorkNet.DAL.Repositories.IRepositories
     {
         Task<bool> AddCandidate(Candidate candidate);
         Task<Candidate?> GetByUserId(int uId);
-        Task<Candidate?> GetByCandidateId(int uId);
+        Task<Candidate?> GetByCandidateId(int cId);
         Task<bool> UpdateCandidate(Candidate candidate);
         Task<bool> DeleteCandidate(Candidate candidate);
         Task<List<Skill>> GetAllSkills();
+        Task<List<JobApplication>> GetAllApplications(int candidateId);
 
     }
 }

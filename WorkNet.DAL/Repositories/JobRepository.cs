@@ -28,9 +28,28 @@ namespace WorkNet.DAL.Repositories
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<JobPosting>> GetAllJobs()
+        public async Task<List<JobPosting>> GetAllJobs(string? jobTitle, string? jobRole, string? jobType, string? location)
         {
-            return await _db.JobPostings.AsNoTracking().ToListAsync();
+            var query = _db.JobPostings.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(jobTitle))
+                query = query.Where(j => j.JobTitle.Contains(jobTitle.ToLower()));
+
+            if (!string.IsNullOrWhiteSpace(jobRole))
+                query = query.Where(j => j.JobRole.Contains(jobRole.ToLower()));
+
+            if (!string.IsNullOrWhiteSpace(jobType))
+                query = query.Where(j => j.JobType.Contains(jobType.ToLower()));
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<JobPosting>> GetAllJobs(int eId)
+        {
+            return await _db.JobPostings
+                .AsNoTracking()
+                .Where(j => j.EmployerId == eId)
+                .ToListAsync();
         }
 
         public async Task<JobPosting?> GetJob(int jobId)
@@ -57,7 +76,6 @@ namespace WorkNet.DAL.Repositories
 
             return await _db.SaveChangesAsync() > 0;
         }
-
 
         public async Task<bool> SubmitJobApplication(JobApplication jobApplication)
         {

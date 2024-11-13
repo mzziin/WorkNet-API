@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using WorkNet.BLL.DTOs.JobDTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using WorkNet.BLL.Services.IServices;
 
 namespace WorkNetAPI.Controllers
@@ -17,9 +15,14 @@ namespace WorkNetAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllJobs()
+        public async Task<IActionResult> GetAllJobs(
+            [FromQuery] string? jobTitle = null,
+            [FromQuery] string? jobRole = null,
+            [FromQuery] string? jobType = null,
+            [FromQuery] string? location = null
+            )
         {
-            var response = await _jobService.GetAllJobs();
+            var response = await _jobService.SearchJobs(jobTitle, jobRole, jobType, location);
             return Ok(new { status = true, data = new { Jobs = response } });
         }
 
@@ -30,36 +33,6 @@ namespace WorkNetAPI.Controllers
             return Ok(new { status = true, data = new { Job = job } });
         }
 
-        [HttpPost]
-        [Authorize(Policy = "RequireEmployerRole")]
-        public async Task<IActionResult> AddJob([FromBody] JobAddDTO jobAddDTO)
-        {
-            var response = await _jobService.AddJob(jobAddDTO);
-            if (response.IsSuccess)
-                return Ok(new { status = true, message = "Job added successfully" });
-            else
-                return BadRequest(new { status = false, message = response.Message });
-        }
 
-        [HttpPut("{jobId}")]
-        [Authorize(Policy = "RequireEmployerRole")]
-        public async Task<IActionResult> EditJob(int jobId, [FromBody] JobUpdateDTO jobUpdateDTO)
-        {
-            var response = await _jobService.UpdateJob(jobId, jobUpdateDTO);
-            if (response == null)
-                return BadRequest(new { status = false, message = "Something went wrong" });
-            return Ok(new { status = true, data = new { Job = response } });
-        }
-
-        [HttpDelete("{jobId}")]
-        [Authorize(Policy = "RequireEmployerRole")]
-        public async Task<IActionResult> DeleteJob(int jobId)
-        {
-            var response = await _jobService.DeleteJob(jobId);
-            if (response.IsSuccess)
-                return Ok(new { status = true, message = "Job Deleted successfully" });
-            else
-                return BadRequest(new { status = false, message = response.Message });
-        }
     }
 }

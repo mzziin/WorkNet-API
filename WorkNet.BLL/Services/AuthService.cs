@@ -93,13 +93,9 @@ namespace WorkNet.BLL.Services
                 var existingSkill = SkillsFromDb.FirstOrDefault(c => c.SkillName.ToLower() == skill.ToLower());
 
                 if (existingSkill != null)
-                {
                     skillList.Add(existingSkill);
-                }
                 else
-                {
                     skillList.Add(new Skill { SkillName = skill.Trim() });
-                }
             }
 
             return await _candidateRepository.AddCandidate(new Candidate

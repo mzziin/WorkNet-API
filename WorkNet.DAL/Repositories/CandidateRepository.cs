@@ -118,5 +118,15 @@ namespace WorkNet.DAL.Repositories
         {
             return await _db.Skills.ToListAsync();
         }
+
+        public async Task<List<JobApplication>> GetAllApplications(int candidateId)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(candidateId, "candidateId cannot be less than 1");
+
+            return await _db.JobApplications
+                .AsNoTracking()
+                .Where(j => j.CandidateId == candidateId)
+                .ToListAsync();
+        }
     }
 }

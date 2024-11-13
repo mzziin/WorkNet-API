@@ -15,9 +15,18 @@ namespace WorkNet.BLL.Services
             _jobRepository = jobRepository;
             _mapper = mapper;
         }
-        public async Task<List<outJobDTO>> GetAllJobs()
+        public async Task<List<outJobDTO>> SearchJobs(string? jobTitle, string? jobRole, string? jobType, string? location)
         {
-            var jobs = await _jobRepository.GetAllJobs();
+            var jobs = await _jobRepository.GetAllJobs(jobTitle, jobRole, jobType, location);
+
+            if (jobs == null || !jobs.Any())
+                return new List<outJobDTO>();
+
+            return _mapper.Map<List<outJobDTO>>(jobs);
+        }
+        public async Task<List<outJobDTO>> GetAllJobs(int eId)
+        {
+            var jobs = await _jobRepository.GetAllJobs(eId);
 
             if (jobs == null || !jobs.Any())
                 return new List<outJobDTO>();
@@ -36,12 +45,13 @@ namespace WorkNet.BLL.Services
 
             return _mapper.Map<outJobDTO>(job);
         }
-        public async Task<OperationResult> AddJob(JobAddDTO jobAddDTO)
+        public async Task<OperationResult> AddJob(int eId, JobAddDTO jobAddDTO)
         {
             if (jobAddDTO == null)
                 throw new ArgumentNullException(nameof(jobAddDTO), "Job data cannot be null");
 
             var job = _mapper.Map<JobPosting>(jobAddDTO);
+            job.EmployerId = eId;
 
             var response = await _jobRepository.AddJob(job);
 

@@ -22,7 +22,7 @@ namespace WorkNet.DAL.Repositories
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<JobApplication>> GetAllByCandidateId(int candidateId)
+        /*public async Task<List<JobApplication>> GetAllByCandidateId(int candidateId)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(candidateId, "candidateId cannot be less than 1");
 
@@ -30,7 +30,7 @@ namespace WorkNet.DAL.Repositories
                 .AsNoTracking()
                 .Where(j => j.CandidateId == candidateId)
                 .ToListAsync();
-        }
+        }*/
 
         public async Task<List<JobApplication>> GetAllByJobId(int jobId)
         {
@@ -54,6 +54,16 @@ namespace WorkNet.DAL.Repositories
             return await _db.JobApplications
                 .AsNoTracking()
                 .FirstOrDefaultAsync(j => j.JobId == jobId && j.CandidateId == candidateId);
+        }
+
+        public async Task<bool> UpdateStatus(int applicationId, string status)
+        {
+            var application = await _db.JobApplications.FindAsync(applicationId);
+            if (application == null)
+                return false;
+            application.Status = status;
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }
