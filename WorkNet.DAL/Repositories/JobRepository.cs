@@ -35,6 +35,9 @@ namespace WorkNet.DAL.Repositories
             if (!string.IsNullOrWhiteSpace(jobTitle))
                 query = query.Where(j => j.JobTitle.Contains(jobTitle.ToLower()));
 
+            if (!string.IsNullOrWhiteSpace(location))
+                query = query.Where(j => j.Location.Contains(location.ToLower()));
+
             if (!string.IsNullOrWhiteSpace(jobRole))
                 query = query.Where(j => j.JobRole.Contains(jobRole.ToLower()));
 
@@ -62,7 +65,7 @@ namespace WorkNet.DAL.Repositories
         {
             ArgumentException.ThrowIfNullOrEmpty(nameof(job));
 
-            var jobFromDb = await _db.JobPostings.FindAsync(job.JobId);
+            var jobFromDb = await _db.JobPostings.FirstOrDefaultAsync(j => j.JobId == job.JobId);
             if (jobFromDb == null)
                 return false;
 

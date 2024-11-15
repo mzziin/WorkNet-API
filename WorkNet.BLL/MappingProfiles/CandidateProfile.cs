@@ -8,7 +8,8 @@ namespace WorkNet.BLL.MappingProfiles
     {
         public CandidateProfile()
         {
-            CreateMap<Candidate, outCandidateDTO>();
+            CreateMap<Candidate, outCandidateDTO>()
+                .ForMember(dest => dest.Skills, opt => opt.Ignore());
             CreateMap<CandidateUpdateDTO, Candidate>();
         }
     }

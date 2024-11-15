@@ -1,0 +1,33 @@
+networks:
+  worknet-network:
+
+services:
+  worknetDb:
+    container_name: WorkNet-Db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8003:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=admin@123
+    networks:
+      - worknet-network
+
+  worknetapi:
+    container_name: WorkNet-Api
+    image: ${DOCKER_REGISTRY-}worknetapi
+    build:
+      context: .
+      dockerfile: WorkNetAPI/Dockerfile
+    ports:
+      - 8001:8080
+      - 8002:8081
+    depends_on:
+      - worknetDb
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DB_HOST=worknetDb
+      - DB_NAME=WorkNetDb
+      - DB_SA_PASSWORD=admin@123
+    networks:
+      - worknet-network

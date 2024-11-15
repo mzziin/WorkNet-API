@@ -10,7 +10,8 @@ namespace WorkNet.BLL.MappingProfiles
         {
             CreateMap<JobPosting, outJobDTO>();
             CreateMap<JobAddDTO, JobPosting>();
-            CreateMap<JobUpdateDTO, JobPosting>();
+            CreateMap<JobUpdateDTO, JobPosting>()
+                .ForAllMembers(dest => dest.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

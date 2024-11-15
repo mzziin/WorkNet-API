@@ -33,17 +33,10 @@ namespace WorkNet.BLL.Services
 
             var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
 
-            return new outCandidateDTO
-            {
-                CandidateId = candidate!.CandidateId,
-                UserId = candidate.UserId,
-                FullName = candidate.FullName,
-                Address = candidate.Address,
-                ContactNumber = candidate.ContactNumber,
-                Experience = candidate.Experience,
-                ResumePath = candidate.ResumePath,
-                Skills = skills
-            };
+            var outCandidate = _mapper.Map<outCandidateDTO>(candidate);
+            outCandidate.Skills = skills;
+
+            return outCandidate;
         }
 
         public async Task<outCandidateDTO?> GetByUserId(int uId)
@@ -57,17 +50,10 @@ namespace WorkNet.BLL.Services
 
             var skills = candidate.Skills?.Select(skill => skill.SkillName).ToList() ?? new List<string>();
 
-            return new outCandidateDTO
-            {
-                CandidateId = candidate!.CandidateId,
-                UserId = candidate.UserId,
-                FullName = candidate.FullName,
-                Address = candidate.Address,
-                ContactNumber = candidate.ContactNumber,
-                Experience = candidate.Experience,
-                ResumePath = candidate.ResumePath,
-                Skills = skills
-            };
+            var outCandidate = _mapper.Map<outCandidateDTO>(candidate);
+            outCandidate.Skills = skills;
+
+            return outCandidate;
         }
 
         public async Task<OperationResult> UpdateCandidate(int cId, CandidateUpdateDTO candidateUpdateDTO)
@@ -83,17 +69,9 @@ namespace WorkNet.BLL.Services
                     skills.Add(new Skill { SkillName = name });
                 }
             }
-
-            var candidate = new Candidate
-            {
-                CandidateId = cId,
-                FullName = candidateUpdateDTO.FullName,
-                Address = candidateUpdateDTO.Address,
-                ContactNumber = candidateUpdateDTO.ContactNumber,
-                Experience = candidateUpdateDTO.Experience,
-                ResumePath = candidateUpdateDTO.ResumePath,
-                Skills = skills
-            };
+            var candidate = _mapper.Map<Candidate>(candidateUpdateDTO);
+            candidate.Skills = skills;
+            candidate.CandidateId = cId;
 
             var status = await _candidateRepository.UpdateCandidate(candidate);
 

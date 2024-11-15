@@ -1,4 +1,5 @@
-﻿using WorkNet.BLL.DTOs.EmployerDTOs;
+﻿using AutoMapper;
+using WorkNet.BLL.DTOs.EmployerDTOs;
 using WorkNet.BLL.Services.IServices;
 using WorkNet.DAL.Models;
 using WorkNet.DAL.Repositories.IRepositories;
@@ -8,9 +9,11 @@ namespace WorkNet.BLL.Services
     public class EmployerService : IEmployerService
     {
         private readonly IEmployerRepository _employerRepository;
-        public EmployerService(IEmployerRepository employerRepository)
+        private readonly IMapper _mapper;
+        public EmployerService(IEmployerRepository employerRepository, IMapper mapper)
         {
             _employerRepository = employerRepository;
+            _mapper = mapper;
         }
 
         public async Task<OutEmployerDTO?> GetByUserId(int uId)
@@ -21,15 +24,7 @@ namespace WorkNet.BLL.Services
             if (user == null)
                 return null;
 
-            return new OutEmployerDTO
-            {
-                EmployerId = user.EmployerId,
-                UserId = user.UserId,
-                CompanyName = user.CompanyName,
-                Address = user.Address,
-                Industry = user.Industry,
-                ContactPerson = user.ContactPerson,
-            };
+            return _mapper.Map<OutEmployerDTO>(user);
         }
         public async Task<OutEmployerDTO?> GetByEmployerId(int eId)
         {
@@ -39,29 +34,16 @@ namespace WorkNet.BLL.Services
             if (user == null)
                 return null;
 
-            return new OutEmployerDTO
-            {
-                EmployerId = user.EmployerId,
-                UserId = user.UserId,
-                CompanyName = user.CompanyName,
-                Address = user.Address,
-                Industry = user.Industry,
-                ContactPerson = user.ContactPerson,
-            };
+            return _mapper.Map<OutEmployerDTO>(user);
         }
 
         public async Task<OperationResult> UpdateEmployer(int eId, EmployerUpdateDTO employerUpdateDTO)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(eId);
 
-            var employer = new Employer
-            {
-                CompanyName = employerUpdateDTO.CompanyName,
-                Address = employerUpdateDTO.Address,
-                ContactPerson = employerUpdateDTO.ContactPerson,
-                Industry = employerUpdateDTO.Industry,
-                EmployerId = eId,
-            };
+            var employer = _mapper.Map<Employer>(employerUpdateDTO);
+            employer.EmployerId = eId;
+
             var result = await _employerRepository.UpdateEmployer(employer);
             if (result == false)
             {

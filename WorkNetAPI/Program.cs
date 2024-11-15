@@ -37,7 +37,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Db Connection 
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+// for docker container
+string DockerconnectionString = $"Data Source={dbHost}; Initial Catalog={dbName}; User ID=sa; Password={dbPassword}; TrustServerCertificate=True";
+// for localhost
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+
 builder.Services.RegisterDbContext(connectionString);
 
 // services from bll

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using WorkNet.DAL.Models;
 
 namespace WorkNet.DAL.Data;
@@ -9,9 +11,19 @@ public partial class WorkNetDbContext : DbContext
     {
     }
 
-    public WorkNetDbContext(DbContextOptions<WorkNetDbContext> options)
-        : base(options)
+    public WorkNetDbContext(DbContextOptions<WorkNetDbContext> options) : base(options)
     {
+        var dbCreater = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+        if (dbCreater != null)
+        {
+            // Create Database 
+            if (!dbCreater.CanConnect())
+                dbCreater.Create();
+
+            // Create Tables
+            if (!dbCreater.HasTables())
+                dbCreater.CreateTables();
+        }
     }
 
     public virtual DbSet<Candidate> Candidates { get; set; }

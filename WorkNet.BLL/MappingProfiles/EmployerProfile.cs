@@ -10,6 +10,7 @@ namespace WorkNet.BLL.MappingProfiles
         {
             CreateMap<Employer, OutEmployerDTO>();
             CreateMap<EmployerUpdateDTO, Employer>();
+            CreateMap<EmployerRegisterDTO, Employer>();
         }
     }
 }
