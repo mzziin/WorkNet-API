@@ -33,7 +33,7 @@ namespace WorkNetAPI.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -71,7 +71,7 @@ namespace WorkNetAPI.Controllers
 
         [HttpPost]
         [Route("employer/register")]
-        public async Task<IActionResult> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
+        public async Task<IActionResult> RegisterEmployer([FromBody] EmployerRegisterDTO employerRegisterDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -85,7 +85,7 @@ namespace WorkNetAPI.Controllers
 
         [HttpPost]
         [Route("candidate/register")]
-        public async Task<IActionResult> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
+        public async Task<IActionResult> RegisterCandidate([FromBody] CandidateRegisterDTO candidateRegisterDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -48,7 +48,7 @@ namespace WorkNetAPI.Controllers
         }
 
         [HttpPut("{eId}")]
-        public async Task<IActionResult> UpdateEmployer(int eId, EmployerUpdateDTO employerUpdateDTO)
+        public async Task<IActionResult> UpdateEmployer(int eId, [FromBody] EmployerUpdateDTO employerUpdateDTO)
         {
             if (employerUpdateDTO == null || !ModelState.IsValid)
                 return BadRequest(new { status = "fail", Message = "Employer details are not valid", modelstate = ModelState });
