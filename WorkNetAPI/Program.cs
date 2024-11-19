@@ -45,7 +45,7 @@ string DockerconnectionString = $"Data Source={dbHost}; Initial Catalog={dbName}
 // for localhost
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
-builder.Services.RegisterDbContext(connectionString);
+builder.Services.RegisterDbContext(DockerconnectionString);
 
 // services from bll
 builder.Services.RegisterRepositories();

@@ -63,7 +63,6 @@ namespace WorkNet.DAL.Repositories
                 }
                 catch (Exception)
                 {
-                    //log
                     await transaction.RollbackAsync();
                     throw;
                 }
