@@ -41,8 +41,6 @@ WorkNet is a job portal API designed to streamline the process of connecting emp
 
 You can quickly test the WorkNet API by pulling the pre-built Docker image from Docker Hub and running it with the provided `docker-compose.yml` file.
 
----
-
 ### 1. Download the `docker-compose.yml` File
 - Obtain the `docker-compose.yml` file from this repository or download it directly:
 
@@ -52,3 +50,5 @@ You can quickly test the WorkNet API by pulling the pre-built Docker image from 
 ### 3. Access the API
 - Base URL: http://localhost:8001 (or the port specified in the docker-compose.yml file)
 - Use tools like Postman or Swagger to interact with the API.
+
+---
