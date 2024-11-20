@@ -1,4 +1,4 @@
-# WorkNet Job Portal API
+# WorkNet API :briefcase:
 
 WorkNet is a job portal API designed to streamline the process of connecting employers with job seekers. The API is built using .NET 8, emphasizing clean architecture and scalability.
 
