@@ -45,7 +45,7 @@ You can quickly test the WorkNet API by pulling the pre-built Docker image from 
 - Obtain the `docker-compose.yml` file from this repository or download it directly:
 
 ### 2. Pull and Run the Image from Docker Hub
-- docker-compose up
+- `docker-compose up`
 
 ### 3. Access the API
 - Base URL: http://localhost:8001 (or the port specified in the docker-compose.yml file)
