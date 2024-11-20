@@ -52,3 +52,12 @@ You can quickly test the WorkNet API by pulling the pre-built Docker image from 
 - Use tools like Postman or Swagger to interact with the API.
 
 ---
+
+## Contribution Guidelines
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Submit a pull request
+
+---
