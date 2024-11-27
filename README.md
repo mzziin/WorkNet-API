@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 # WorkNet API :briefcase:
 
 WorkNet is a job portal API designed to streamline the process of connecting employers with job seekers. The API is built using .NET 8, emphasizing clean architecture and scalability.
@@ -63,4 +62,3 @@ You can quickly test the WorkNet API by pulling the pre-built Docker image from 
 4. Submit a pull request
 
 ---
->>>>>>> 4dc4dfce616ed8cbf26e2790cde0629333078256
