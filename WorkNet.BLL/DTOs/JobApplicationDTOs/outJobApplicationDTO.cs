@@ -10,6 +10,6 @@
 
         public DateTime? ApplicationDate { get; set; }
 
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 }

@@ -4,6 +4,7 @@ namespace WorkNet.BLL.DTOs.CandidateDTOs
 {
     public class CandidateUpdateDTO
     {
+        [StringLength(100, MinimumLength = 3)]
         public string? FullName { get; set; }
 
         [Phone]

@@ -9,6 +9,8 @@ using WorkNet.BLL.Services.IServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Cors settings
 var AllowAllpolicy = "AllowAll";
 builder.Services.AddCors(options =>
 {

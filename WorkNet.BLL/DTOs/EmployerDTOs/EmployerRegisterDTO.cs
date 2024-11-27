@@ -5,9 +5,11 @@ namespace WorkNet.BLL.DTOs.EmployerDTOs
     public class EmployerRegisterDTO
     {
         [Required]
+        [StringLength(100, MinimumLength = 3)]
         public required string CompanyName { get; set; }
 
         [Required]
+        [StringLength(100, MinimumLength = 3)]
         public required string ContactPerson { get; set; }
 
         [Required]
@@ -15,6 +17,7 @@ namespace WorkNet.BLL.DTOs.EmployerDTOs
         public required string Address { get; set; }
 
         [Required]
+        [StringLength(100, MinimumLength = 3)]
         public required string Industry { get; set; }
 
 
