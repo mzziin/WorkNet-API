@@ -45,13 +45,13 @@ namespace WorkNet.BLL.Services
             return null;
         }
 
-        public async Task<bool> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
+        public async Task<int> RegisterEmployer(EmployerRegisterDTO employerRegisterDTO)
         {
             ArgumentNullException.ThrowIfNull(employerRegisterDTO);
 
             var user = await _userRepository.GetUser(employerRegisterDTO.Email);
             if (user != null)
-                return false;
+                return 0;
 
             int uId = await _userRepository.AddUser(new User
             {
@@ -60,7 +60,7 @@ namespace WorkNet.BLL.Services
                 PasswordHash = HashingService.HashPassword(employerRegisterDTO.Password)!
             });
 
-            return await _employerRepository.AddEmployer(new Employer
+            bool status = await _employerRepository.AddEmployer(new Employer
             {
                 UserId = uId,
                 CompanyName = employerRegisterDTO.CompanyName,
@@ -68,15 +68,18 @@ namespace WorkNet.BLL.Services
                 ContactPerson = employerRegisterDTO.ContactPerson,
                 Industry = employerRegisterDTO.Industry
             });
+            if (status)
+                return uId;
+            return 0;
         }
 
-        public async Task<bool> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
+        public async Task<int> RegisterCandidate(CandidateRegisterDTO candidateRegisterDTO)
         {
             ArgumentNullException.ThrowIfNull(candidateRegisterDTO);
 
             var user = await _userRepository.GetUser(candidateRegisterDTO.Email);
             if (user != null)
-                return false;
+                return 0;
 
             int uId = await _userRepository.AddUser(new User
             {
@@ -98,7 +101,7 @@ namespace WorkNet.BLL.Services
                     skillList.Add(new Skill { SkillName = skill.Trim() });
             }
 
-            return await _candidateRepository.AddCandidate(new Candidate
+            bool status = await _candidateRepository.AddCandidate(new Candidate
             {
                 UserId = uId,
                 FullName = candidateRegisterDTO.FullName,
@@ -108,6 +111,10 @@ namespace WorkNet.BLL.Services
                 ResumePath = candidateRegisterDTO.ResumePath,
                 Skills = skillList
             });
+
+            if (status)
+                return uId;
+            return 0;
         }
 
         public bool CheckIsAuthorized(string claim, int id)

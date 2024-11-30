@@ -76,11 +76,15 @@ namespace WorkNetAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var status = await _authService.RegisterEmployer(employerRegisterDTO);
-            if (status)
-                return Ok(new { status = "success", Message = "Employer registered successfully"! });
+            var uId = await _authService.RegisterEmployer(employerRegisterDTO);
+            if (uId != 0)
+                return CreatedAtAction(
+                    actionName: nameof(EmployerController.GetEmployer),
+                    controllerName: "Employer",
+                    routeValues: new { uId = uId },
+                    new { status = "success", Message = "Employer registered successfully"! });
             else
-                return BadRequest(new { status = "fail", Message = "Employer already exists" });
+                return Conflict(new { status = "fail", Message = "Employer already exists" });
         }
 
         [HttpPost]
@@ -90,11 +94,15 @@ namespace WorkNetAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var status = await _authService.RegisterCandidate(candidateRegisterDTO);
-            if (status)
-                return Ok(new { status = "success", Message = "Candidate registered successfully" });
+            var uId = await _authService.RegisterCandidate(candidateRegisterDTO);
+            if (uId != 0)
+                return CreatedAtAction(
+                    actionName: nameof(CandidateController.GetCandidate),
+                    controllerName: "Candidate",
+                    routeValues: new { uId = uId },
+                    new { status = "success", Message = "Candidate registered successfully" });
             else
-                return BadRequest(new { status = "fail", Message = "Candidate already exists" });
+                return Conflict(new { status = "fail", Message = "Candidate already exists" });
         }
     }
 }
