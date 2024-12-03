@@ -76,9 +76,9 @@ namespace WorkNetAPI.Controllers
             {
                 var applications = await _candidateService.GetAllJobApplicationsByCandidateId(cId);
                 if (applications != null)
-                    return Ok(new { status = true, data = new { JobApplications = applications } });
+                    return Ok(new { status = "success", data = new { JobApplications = applications } });
                 else
-                    return NotFound(new { status = false, message = "Application not found" });
+                    return NotFound(new { status = "fail", message = "Application not found" });
             }
             return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }
@@ -90,9 +90,9 @@ namespace WorkNetAPI.Controllers
             {
                 var response = await _candidateService.ApplyJobApplication(cId, jobId);
                 if (response.IsSuccess)
-                    return Ok(new { status = true, message = "Applied successfully" });
+                    return Ok(new { status = "success", message = "Applied successfully" });
                 else
-                    return BadRequest(new { status = false, message = response.Message });
+                    return BadRequest(new { status = "fail", message = response.Message });
             }
             return Unauthorized(new { status = "fail", message = "You are not authorized" });
         }

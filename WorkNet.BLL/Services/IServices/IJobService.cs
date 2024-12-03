@@ -5,7 +5,7 @@ namespace WorkNet.BLL.Services.IServices
     public interface IJobService
     {
         Task<outJobDTO> GetJob(int jobId);
-        Task<List<outJobDTO>> SearchJobs(string? jobTitle, string? jobRole, string? jobType, string? location);
+        Task<PaginatedResult<List<outJobDTO>>> SearchJobs(JobGetAllDTO jobGetAllDTO);
         Task<List<outJobDTO>> GetAllJobs(int eId);
         Task<OperationResult> AddJob(int eId, JobAddDTO jobAddDTO);
         Task<OperationResult> DeleteJob(int jobId);

@@ -15,14 +15,33 @@ namespace WorkNet.BLL.Services
             _jobRepository = jobRepository;
             _mapper = mapper;
         }
-        public async Task<List<outJobDTO>> SearchJobs(string? jobTitle, string? jobRole, string? jobType, string? location)
+        public async Task<PaginatedResult<List<outJobDTO>>> SearchJobs(JobGetAllDTO jobGetAllDTO)
         {
-            var jobs = await _jobRepository.GetAllJobs(jobTitle, jobRole, jobType, location);
+            var jobs = await _jobRepository.GetAllJobs(
+                jobGetAllDTO.JobTitle,
+                jobGetAllDTO.JobRole,
+                jobGetAllDTO.JobType,
+                jobGetAllDTO.Location,
+                jobGetAllDTO.PageNumber,
+                jobGetAllDTO.PageSize
+                );
+
+            int totalJobApplications = await _jobRepository.GetTotalRecord();
 
             if (jobs == null || !jobs.Any())
-                return new List<outJobDTO>();
+                return new PaginatedResult<List<outJobDTO>>
+                {
+                    Data = [],
+                    TotalRecords = totalJobApplications,
+                };
 
-            return _mapper.Map<List<outJobDTO>>(jobs);
+            var outJobList = _mapper.Map<List<outJobDTO>>(jobs);
+
+            return new PaginatedResult<List<outJobDTO>>
+            {
+                Data = outJobList,
+                TotalRecords = totalJobApplications,
+            };
         }
         public async Task<List<outJobDTO>> GetAllJobs(int eId)
         {

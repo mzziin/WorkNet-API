@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WorkNet.BLL.DTOs.JobDTOs;
 using WorkNet.BLL.Services.IServices;
 
 namespace WorkNetAPI.Controllers
@@ -15,15 +16,22 @@ namespace WorkNetAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllJobs(
-            [FromQuery] string? jobTitle = null,
-            [FromQuery] string? jobRole = null,
-            [FromQuery] string? jobType = null,
-            [FromQuery] string? location = null
-            )
+        public async Task<IActionResult> GetAllJobs([FromQuery] JobGetAllDTO jobGetAllDTO)
         {
-            var response = await _jobService.SearchJobs(jobTitle, jobRole, jobType, location);
-            return Ok(new { status = true, data = new { Jobs = response } });
+            if (jobGetAllDTO.PageNumber < 1 || jobGetAllDTO.PageSize < 1)
+            {
+                return BadRequest(new { status = false, message = "Invalid page number or page size." });
+            }
+            var response = await _jobService.SearchJobs(jobGetAllDTO);
+            return Ok(new
+            {
+                status = true,
+                pageNumber = jobGetAllDTO.PageNumber,
+                pageSize = jobGetAllDTO.PageSize,
+                totalRecords = response.TotalRecords,
+                totalPages = (int)Math.Ceiling((double)response.TotalRecords / jobGetAllDTO.PageSize),
+                data = new { Jobs = response.Data }
+            });
         }
 
         [HttpGet("{jobId}")]
