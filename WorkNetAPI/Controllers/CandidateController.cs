@@ -5,7 +5,7 @@ using WorkNet.BLL.Services.IServices;
 
 namespace WorkNetAPI.Controllers
 {
-    [Authorize(Policy = "RequireCandidateRole")]
+    [Authorize(Roles = "Candidate")]
     [Route("api/[controller]")]
     [ApiController]
     public class CandidateController : ControllerBase
@@ -70,7 +70,7 @@ namespace WorkNetAPI.Controllers
         }
 
         [HttpGet("{cId}/applications")]
-        public async Task<IActionResult> GetApplicationsByCandidateId(int cId)
+        public async Task<IActionResult> GetJobApplicationsByCandidateId(int cId)
         {
             if (_authService.CheckIsAuthorized("CandidateId", cId))
             {

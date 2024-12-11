@@ -4,12 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WorkNet.BLL;
-using WorkNet.BLL.Services;
-using WorkNet.BLL.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 // Cors settings
 var AllowAllpolicy = "AllowAll";
@@ -25,6 +22,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
 // httplogging
 builder.Services.AddHttpLogging(logging =>
 {
@@ -33,31 +31,30 @@ builder.Services.AddHttpLogging(logging =>
     logging.RequestBodyLogLimit = 4096; // Set limit for request body
     logging.ResponseBodyLogLimit = 4096; // Set limit for response body
 });
+
+// swagger
 builder.Services.AddEndpointsApiExplorer();
+// set swagger for jwt
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer"
+        Name = "Authorization",
+        Description = "Enter 'Bearer [jwt]'",
+        Type = SecuritySchemeType.ApiKey
     });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    var scheme = new OpenApiSecurityScheme
     {
+        Reference = new OpenApiReference
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
         }
-    });
+    };
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
 });
 
 // Automapper
@@ -72,17 +69,11 @@ string DockerconnectionString = $"Data Source={dbHost}; Initial Catalog={dbName}
 // for localhost
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
-builder.Services.RegisterDbContext(connectionString);
+builder.Services.RegisterDbContext(DockerconnectionString);
 
 // services from bll
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICandidateService, CandidateService>();
-builder.Services.AddScoped<IEmployerService, EmployerService>();
-builder.Services.AddScoped<IJobService, JobService>();
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -91,25 +82,23 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-    };
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireCandidateRole", policy => policy.RequireRole("Candidate"));
-    options.AddPolicy("RequireEmployerRole", policy => policy.RequireRole("Employer"));
-});
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
 
 // log in json format to console
 /*builder.Logging.AddJsonConsole(options =>

@@ -17,7 +17,7 @@ namespace WorkNet.BLL.SecurityServices
 
         public string GenerateJwtToken(UserDTO user, int? candidateId = null, int? employerId = null)
         {
-            var claims = new List<Claim>
+            var authClaims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -29,22 +29,21 @@ namespace WorkNet.BLL.SecurityServices
             // Add either CandidateId or EmployerId based on role
             if (candidateId.HasValue)
             {
-                claims.Add(new Claim("CandidateId", candidateId.Value.ToString()));
+                authClaims.Add(new Claim("CandidateId", candidateId.Value.ToString()));
             }
             if (employerId.HasValue)
             {
-                claims.Add(new Claim("EmployerId", employerId.Value.ToString()));
+                authClaims.Add(new Claim("EmployerId", employerId.Value.ToString()));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: authClaims,
                 expires: DateTime.UtcNow.AddMinutes(60),
-                signingCredentials: creds
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

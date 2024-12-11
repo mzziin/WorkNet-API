@@ -8,7 +8,7 @@ using WorkNet.BLL.Services.IServices;
 
 namespace WorkNetAPI.Controllers
 {
-    [Authorize(Policy = "RequireEmployerRole")]
+    [Authorize(Roles = "Employer")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployerController : ControllerBase

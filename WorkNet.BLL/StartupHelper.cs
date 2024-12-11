@@ -20,6 +20,11 @@ namespace WorkNet.BLL
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddSingleton<JWTService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICandidateService, CandidateService>();
+            services.AddScoped<IEmployerService, EmployerService>();
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
         }
         public static void RegisterRepositories(this IServiceCollection services)
         {

@@ -15,7 +15,7 @@ services:
 
   worknetapi:
     container_name: worknet-api
-    image: ${DOCKER_REGISTRY-}worknetapi:latest
+    image: mzziin/worknetapi:latest
     build:
       context: .
       dockerfile: WorkNetAPI/Dockerfile
